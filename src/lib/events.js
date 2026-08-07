@@ -5,7 +5,7 @@ export const eventsData = [
     status: "Ongoing",
     endDate: "2026-08-09T23:59:59", // Use YYYY-MM-DDTHH:mm:ss format
     registrationLink: "https://kazi-76rz.onrender.com/",
-    title: "Let the Idea FLOW",
+    title: "Let the Ideas Flow",
     image: "/Ideathone.jpeg", // Placeholder as requested
     footerText: "Event concluded. Thanks for participating.",
     details: [
