@@ -13,7 +13,7 @@ export const eventsData = [
         sectionTitle: "About the Event",
         tag: "INFO",
         content: [
-          "IdeaSprint is a non-coding innovation event where students pitch ideas to solve everyday problems. Coding is not required, only creative thinking and presentation skills are needed.",
+          "IRIDESCENT is a non-coding innovation event where students pitch ideas to solve everyday problems. Coding is not required, only creative thinking and presentation skills are needed.",
 
           "Identify a real-world problem",
           "Propose a tech-based or process-based solution",
