@@ -115,10 +115,10 @@ export default function IdeathonSubmissionModal({ isOpen, onClose, isDeadlinePas
     setIsSubmitting(true);
 
     try {
-      const apiUrl = import.meta.env.VITE_IDEATHON_SUBMISSION_API_URL;
+      const apiUrl = import.meta.env.VITE_IDEATHON_SUBMISSION_API_URL || 'https://script.google.com/macros/s/AKfycbx_7p6Pfk_n6Cz3r6i4hGJF-cnuFxD8r-qoA3YRJMR06a2B8YDM95aAjEQdixMpLdzT/exec';
       
       if (!apiUrl) {
-        setErrorMessage('Google Apps Script Web App URL is not configured yet in environment variables.');
+        setErrorMessage('Google Apps Script Web App URL is not configured.');
         setIsSubmitting(false);
         return;
       }
