@@ -13,6 +13,7 @@ import MindDetail from './pages/MindDetail'
 import Events from './pages/Events'
 import Blitz from './pages/Blitz'
 import BlitzChallenge from './pages/BlitzChallenge'
+import NotFound from './pages/NotFound'
 
 function App() {
   const location = useLocation()
@@ -36,6 +37,7 @@ function App() {
           <Route path="/events" element={<Events />} />
           <Route path="/blitz" element={<Blitz />} />
           <Route path="/blitz/:slug" element={<BlitzChallenge />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </AnimatePresence>
       {!hideNavAndFooter && <Footer />}

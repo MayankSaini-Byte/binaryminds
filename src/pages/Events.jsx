@@ -3,7 +3,20 @@ import { motion, AnimatePresence } from 'framer-motion'
 import PageTransition from '../components/PageTransition'
 import { eventsData } from '../lib/events'
 import eventSpecificData from '../lib/eventSpecificData.json'
-import { FaCalendarAlt, FaTrophy, FaLightbulb, FaCheckCircle, FaInfoCircle, FaTools } from 'react-icons/fa'
+import { 
+  FaCalendarAlt, 
+  FaTrophy, 
+  FaLightbulb, 
+  FaCheckCircle, 
+  FaInfoCircle, 
+  FaTools,
+  FaBookOpen,
+  FaPaperPlane,
+  FaExternalLinkAlt,
+  FaLock 
+} from 'react-icons/fa'
+import MagicRings from '../components/MagicRings'
+import IdeathonSubmissionModal from '../components/IdeathonSubmissionModal'
 import './Events.css'
 
 const sectionStyles = [
@@ -44,7 +57,8 @@ const getExternalLink = (url) => {
 
 export default function Events() {
   const [selectedEvent, setSelectedEvent] = useState(null)
-  const [viewingProblems, setViewingProblems] = useState(false)
+  const [activeView, setActiveView] = useState('details') // 'details' | 'problems'
+  const [isSubmissionModalOpen, setIsSubmissionModalOpen] = useState(false)
 
   return (
     <PageTransition className="page events-page">
@@ -68,7 +82,7 @@ export default function Events() {
                     layoutId={`card-container-${event.id}`}
                     key={event.id}
                     className="event-card-preview"
-                    onClick={() => { setSelectedEvent(event); setViewingProblems(false); }}
+                    onClick={() => { setSelectedEvent(event); setActiveView('details'); }}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
@@ -97,18 +111,54 @@ export default function Events() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
               className="event-detail-view"
+              style={{ position: 'relative' }}
             >
+              {/* MagicRings Canvas Background Effect on Card Click */}
+              <div 
+                style={{
+                  position: 'absolute',
+                  inset: '-40px -60px',
+                  zIndex: 0,
+                  pointerEvents: 'none',
+                  opacity: 0.65,
+                  overflow: 'hidden'
+                }}
+              >
+                <MagicRings
+                  color="#38bdf8"
+                  colorTwo="#a78bfa"
+                  ringCount={6}
+                  speed={1}
+                  attenuation={9}
+                  lineThickness={2}
+                  baseRadius={0.28}
+                  radiusStep={0.11}
+                  scaleRate={0.12}
+                  opacity={0.8}
+                  blur={0}
+                  noiseAmount={0.08}
+                  rotation={0}
+                  ringGap={1.5}
+                  fadeIn={0.7}
+                  fadeOut={0.5}
+                  followMouse={true}
+                  mouseInfluence={0.15}
+                  hoverScale={1.15}
+                  parallax={0.04}
+                  clickBurst={true}
+                />
+              </div>
               <motion.button
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2 }}
                 className="back-btn"
                 onClick={() => {
-                  if (viewingProblems) setViewingProblems(false);
+                  if (activeView !== 'details') setActiveView('details');
                   else setSelectedEvent(null);
                 }}
               >
-                &larr; {viewingProblems ? "Back to Details" : "Back to Events"}
+                &larr; {activeView !== 'details' ? "Back to Details" : "Back to Events"}
               </motion.button>
 
               <div className="event-detail-layout">
@@ -143,10 +193,10 @@ export default function Events() {
                   </motion.div>
                 </motion.div>
 
-                {/* Right side: Details */}
+                {/* Right side: Details / Views */}
                 <div className="event-right-details">
                   <AnimatePresence mode="wait">
-                    {viewingProblems ? (
+                    {activeView === 'problems' ? (
                       <motion.div
                         key="problems-view"
                         initial={{ opacity: 0, x: 20 }}
@@ -202,6 +252,9 @@ export default function Events() {
                       >
                         {selectedEvent.details.map((detail, idx) => {
                           const style = sectionStyles[idx % sectionStyles.length];
+                          const ruleLink = detail.ruleBookLink || (detail.tag === 'INFO' ? selectedEvent.ruleBookLink : null);
+                          const subLink = detail.submissionLink || (detail.tag === 'PRESENTATION' ? selectedEvent.submissionLink : null);
+
                           return (
                           <motion.div
                             key={idx}
@@ -258,25 +311,115 @@ export default function Events() {
                                 })}
                               </div>
                               
-                              {detail.tag === 'CHALLENGES' && detail.documentLink && eventSpecificData[selectedEvent.id] && (
-                                <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'flex-start' }}>
-                                  <button 
-                                    onClick={() => setViewingProblems(true)}
-                                    className="register-glow-btn" 
+                              {/* Card Action Buttons aligned with card theme */}
+                              <div style={{ marginTop: '1.25rem', display: 'flex', gap: '0.75rem', flexWrap: 'wrap', justifyContent: 'flex-start' }}>
+                                {/* RuleBook button on Card 01 (Info) */}
+                                {ruleLink && (
+                                  <a 
+                                    href={getExternalLink(ruleLink)} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer" 
+                                    className="card-action-btn" 
                                     style={{ 
-                                      padding: '0.5rem 1.2rem', 
-                                      fontSize: '0.85rem', 
-                                      background: style.color, 
-                                      boxShadow: `0 0 10px ${style.color}80`,
+                                      padding: '0.55rem 1.3rem', 
+                                      fontSize: '0.82rem', 
+                                      fontWeight: 800,
+                                      background: style.gradient, 
+                                      boxShadow: `0 4px 15px ${style.color}50`,
                                       border: 'none',
-                                      cursor: 'pointer',
-                                      color: '#fff'
+                                      borderRadius: '999px',
+                                      color: '#fff',
+                                      textDecoration: 'none',
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
+                                      gap: '0.5rem',
+                                      letterSpacing: '0.05em',
+                                      textTransform: 'uppercase',
+                                      cursor: 'pointer'
+                                    }}
+                                  >
+                                    <FaBookOpen size={13} /> RuleBook &rarr;
+                                  </a>
+                                )}
+
+                                {/* Submit Idea button on Card 02 (Presentation) */}
+                                {(detail.isSubmissionSection || detail.tag === 'PRESENTATION') && (
+                                  selectedEvent?.endDate && new Date() > new Date(selectedEvent.endDate) ? (
+                                    <button 
+                                      disabled
+                                      className="card-action-btn" 
+                                      style={{ 
+                                        padding: '0.55rem 1.3rem', 
+                                        fontSize: '0.82rem', 
+                                        fontWeight: 800,
+                                        background: '#475569', 
+                                        boxShadow: 'none',
+                                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                                        borderRadius: '999px',
+                                        color: '#cbd5e1',
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        gap: '0.5rem',
+                                        letterSpacing: '0.05em',
+                                        textTransform: 'uppercase',
+                                        cursor: 'not-allowed',
+                                        opacity: 0.75
+                                      }}
+                                    >
+                                      <FaLock size={13} /> Submission Closed
+                                    </button>
+                                  ) : (
+                                    <button 
+                                      onClick={() => setIsSubmissionModalOpen(true)}
+                                      className="card-action-btn" 
+                                      style={{ 
+                                        padding: '0.55rem 1.3rem', 
+                                        fontSize: '0.82rem', 
+                                        fontWeight: 800,
+                                        background: style.gradient, 
+                                        boxShadow: `0 4px 15px ${style.color}50`,
+                                        border: 'none',
+                                        borderRadius: '999px',
+                                        color: '#fff',
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        gap: '0.5rem',
+                                        letterSpacing: '0.05em',
+                                        textTransform: 'uppercase',
+                                        cursor: 'pointer'
+                                      }}
+                                    >
+                                      <FaPaperPlane size={13} /> Submit Idea &rarr;
+                                    </button>
+                                  )
+                                )}
+
+                                {/* Problem Statements button on Card 04 (Challenges) */}
+                                {detail.tag === 'CHALLENGES' && detail.documentLink && eventSpecificData[selectedEvent.id] && (
+                                  <button 
+                                    onClick={() => setActiveView('problems')}
+                                    className="card-action-btn" 
+                                    style={{ 
+                                      padding: '0.55rem 1.3rem', 
+                                      fontSize: '0.82rem', 
+                                      fontWeight: 800,
+                                      background: style.gradient, 
+                                      boxShadow: `0 4px 15px ${style.color}50`,
+                                      border: 'none',
+                                      borderRadius: '999px',
+                                      color: '#fff',
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
+                                      gap: '0.5rem',
+                                      letterSpacing: '0.05em',
+                                      textTransform: 'uppercase',
+                                      cursor: 'pointer'
                                     }}
                                   >
                                     View Problem Statements &rarr;
                                   </button>
-                                </div>
-                              )}
+                                )}
+                              </div>
                             </div>
                           </motion.div>
                         )})}
@@ -289,6 +432,13 @@ export default function Events() {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Ideathon Submission Modal Popup */}
+      <IdeathonSubmissionModal 
+        isOpen={isSubmissionModalOpen}
+        onClose={() => setIsSubmissionModalOpen(false)}
+        isDeadlinePassed={selectedEvent?.endDate ? new Date() > new Date(selectedEvent.endDate) : false}
+      />
     </PageTransition>
   )
 }
