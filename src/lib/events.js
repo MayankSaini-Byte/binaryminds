@@ -31,7 +31,7 @@ export const eventsData = [
         sectionTitle: "Rewards",
         tag: "PRIZE",
         content: [
-          "Certification of Recognition for top 3 participants",
+          "Certification of Recognition for top participant",
           "Honorable Mention Certificates for 3 participants with extraordinary solutions",
           "Certificate of Participation for all participants with a valid submission"
         ]
