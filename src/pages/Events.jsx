@@ -116,6 +116,7 @@ export default function Events() {
             >
               {/* MagicRings Canvas Background Effect on Card Click */}
               <div 
+                className="magic-rings-wrapper"
                 style={{
                   position: 'absolute',
                   inset: '-40px -60px',

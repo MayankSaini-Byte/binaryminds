@@ -353,3 +353,9 @@
   transform: translateY(-2px) scale(1.04);
   filter: brightness(1.15);
 }
+
+@media (max-width: 767px) {
+  .magic-rings-wrapper {
+    display: none !important;
+  }
+}
