@@ -17,6 +17,7 @@ import {
 } from 'react-icons/fa'
 import MagicRings from '../components/MagicRings'
 import IdeathonSubmissionModal from '../components/IdeathonSubmissionModal'
+import DeadlineMeter from '../components/DeadlineMeter'
 import './Events.css'
 
 const sectionStyles = [
@@ -275,13 +276,23 @@ export default function Events() {
                                 0{idx + 1}
                               </div>
 
-                              <div className="ndc-header">
-                                <div className="ndc-tag" style={{ color: style.color }}>
-                                  <span className="ndc-tag-dot" style={{ backgroundColor: style.color }}></span>
-                                  {detail.tag}
+                              <div className="ndc-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
+                                <div>
+                                  <div className="ndc-tag" style={{ color: style.color }}>
+                                    <span className="ndc-tag-dot" style={{ backgroundColor: style.color }}></span>
+                                    {detail.tag}
+                                  </div>
+                                  <h3 className="ndc-title">{detail.sectionTitle}</h3>
+                                  <div className="ndc-divider" style={{ backgroundColor: style.color }}></div>
                                 </div>
-                                <h3 className="ndc-title">{detail.sectionTitle}</h3>
-                                <div className="ndc-divider" style={{ backgroundColor: style.color }}></div>
+
+                                {/* Top Right Deadline Meter in Presentation block */}
+                                {(detail.isSubmissionSection || detail.tag === 'PRESENTATION') && selectedEvent?.endDate && (
+                                  <DeadlineMeter 
+                                    endDate={selectedEvent.endDate} 
+                                    startDate={selectedEvent.startDate}
+                                  />
+                                )}
                               </div>
 
                               <div className="ndc-list">

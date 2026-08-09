@@ -3,6 +3,7 @@ export const eventsData = [
     id: "ideathon",
     type: "IDEA-THON",
     status: "Ongoing",
+    startDate: "2026-08-01T00:00:00",
     endDate: "2026-08-09T18:00:00", // 9th August 6:00 PM
     registrationLink: "https://kazi-76rz.onrender.com/",
     ruleBookLink: "https://docs.google.com/document/d/1cwXW2lAe-uXG12wOx1cYlVS1fTgO-dFETWQV_olWzGo/edit?usp=sharing",
