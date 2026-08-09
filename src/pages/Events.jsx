@@ -13,11 +13,15 @@ import {
   FaBookOpen,
   FaPaperPlane,
   FaExternalLinkAlt,
-  FaLock 
+  FaLock,
+  FaAward,
+  FaUserFriends
 } from 'react-icons/fa'
 import MagicRings from '../components/MagicRings'
 import IdeathonSubmissionModal from '../components/IdeathonSubmissionModal'
 import DeadlineMeter from '../components/DeadlineMeter'
+import ResultsSection from '../components/ResultsSection'
+import { ideathonResults } from '../lib/resultsData'
 import './Events.css'
 
 const sectionStyles = [
@@ -163,42 +167,69 @@ export default function Events() {
                 &larr; {activeView !== 'details' ? "Back to Details" : "Back to Events"}
               </motion.button>
 
-              <div className="event-detail-layout">
-                {/* Left side: Card */}
-                <motion.div layoutId={`card-container-${selectedEvent.id}`} className="event-left-card">
-                  <motion.div layoutId={`card-header-${selectedEvent.id}`} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <span className="card-type">{selectedEvent.type}</span>
-                    <span className="card-status" style={{ marginBottom: '2rem', marginTop: '0.5rem' }}>{selectedEvent.status}</span>
-                  </motion.div>
-                  <motion.img
-                    layoutId={`card-image-${selectedEvent.id}`}
-                    src={selectedEvent.image}
-                    alt={selectedEvent.title}
-                    className="card-img"
-                  />
-                  <motion.h2 layoutId={`card-title-${selectedEvent.id}`} className="card-title">
-                    {selectedEvent.title}
-                  </motion.h2>
-                  <motion.div 
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.3 }}
-                    className="card-footer"
+              <AnimatePresence mode="wait">
+                {activeView === 'results' ? (
+                  <motion.div
+                    key="results-view"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.3 }}
+                    style={{ width: '100%' }}
                   >
-                    {selectedEvent.endDate && new Date() < new Date(selectedEvent.endDate) ? (
-                      <a href={getExternalLink(selectedEvent.registrationLink)} className="register-glow-btn" target="_blank" rel="noopener noreferrer">
-                        REGISTER NOW
-                      </a>
-                    ) : (
-                      <span>{selectedEvent.footerText}</span>
-                    )}
+                    <ResultsSection eventId={selectedEvent.id} />
                   </motion.div>
-                </motion.div>
+                ) : (
+                  <motion.div key="details-layout" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                    <div className="event-detail-layout">
+                    {/* Left side: Card */}
+                    <motion.div layoutId={`card-container-${selectedEvent.id}`} className="event-left-card">
+                      <motion.div layoutId={`card-header-${selectedEvent.id}`} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <span className="card-type">{selectedEvent.type}</span>
+                        <span className="card-status" style={{ marginBottom: '2rem', marginTop: '0.5rem' }}>{selectedEvent.status}</span>
+                      </motion.div>
+                      <motion.img
+                        layoutId={`card-image-${selectedEvent.id}`}
+                        src={selectedEvent.image}
+                        alt={selectedEvent.title}
+                        className="card-img"
+                      />
+                      <motion.h2 layoutId={`card-title-${selectedEvent.id}`} className="card-title">
+                        {selectedEvent.title}
+                      </motion.h2>
+                      <motion.div 
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.3 }}
+                        className="card-footer"
+                      >
+                        {selectedEvent.id === 'ideathon' ? (
+                          <button 
+                            onClick={() => {
+                              setActiveView('results');
+                              setTimeout(() => {
+                                document.getElementById('results')?.scrollIntoView({ behavior: 'smooth' });
+                              }, 50);
+                            }}
+                            className="register-glow-btn"
+                            style={{ border: 'none', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', width: '100%', justifyContent: 'center' }}
+                          >
+                            <FaTrophy size={14} /> VIEW RESULTS &rarr;
+                          </button>
+                        ) : selectedEvent.endDate && new Date() < new Date(selectedEvent.endDate) ? (
+                          <a href={getExternalLink(selectedEvent.registrationLink)} className="register-glow-btn" target="_blank" rel="noopener noreferrer">
+                            REGISTER NOW
+                          </a>
+                        ) : (
+                          <span>{selectedEvent.footerText}</span>
+                        )}
+                      </motion.div>
+                    </motion.div>
 
-                {/* Right side: Details / Views */}
-                <div className="event-right-details">
-                  <AnimatePresence mode="wait">
-                    {activeView === 'problems' ? (
+                    {/* Right side: Details / Views */}
+                    <div className="event-right-details">
+                      <AnimatePresence mode="wait">
+                        {activeView === 'problems' ? (
                       <motion.div
                         key="problems-view"
                         initial={{ opacity: 0, x: 20 }}
@@ -406,6 +437,37 @@ export default function Events() {
                                   )
                                 )}
 
+                                {/* View Winners & Results button on Card 03 (Prize) */}
+                                {detail.tag === 'PRIZE' && selectedEvent.id === 'ideathon' && (
+                                  <button 
+                                    onClick={() => {
+                                      setActiveView('results');
+                                      setTimeout(() => {
+                                        document.getElementById('results')?.scrollIntoView({ behavior: 'smooth' });
+                                      }, 50);
+                                    }}
+                                    className="card-action-btn" 
+                                    style={{ 
+                                      padding: '0.55rem 1.3rem', 
+                                      fontSize: '0.82rem', 
+                                      fontWeight: 800,
+                                      background: style.gradient, 
+                                      boxShadow: `0 4px 15px ${style.color}50`,
+                                      border: 'none',
+                                      borderRadius: '999px',
+                                      color: '#fff',
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
+                                      gap: '0.5rem',
+                                      letterSpacing: '0.05em',
+                                      textTransform: 'uppercase',
+                                      cursor: 'pointer'
+                                    }}
+                                  >
+                                    <FaTrophy size={13} /> View Winners & Results &rarr;
+                                  </button>
+                                )}
+
                                 {/* Problem Statements button on Card 04 (Challenges) */}
                                 {detail.tag === 'CHALLENGES' && detail.documentLink && eventSpecificData[selectedEvent.id] && (
                                   <button 
@@ -435,6 +497,10 @@ export default function Events() {
                             </div>
                           </motion.div>
                         )})}
+
+                        {selectedEvent.id === 'ideathon' && (
+                          <ResultsSection />
+                        )}
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -443,7 +509,10 @@ export default function Events() {
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+      </motion.div>
+    )}
+  </AnimatePresence>
+</div>
 
       {/* Ideathon Submission Modal Popup */}
       <IdeathonSubmissionModal 

@@ -354,7 +354,7 @@
   filter: brightness(1.15);
 }
 
-@media (max-width: 767px) {
+@media (max-width: 900px) {
   .magic-rings-wrapper {
     display: none !important;
   }
