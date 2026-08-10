@@ -437,36 +437,6 @@ export default function Events() {
                                   )
                                 )}
 
-                                {/* View Winners & Results button on Card 03 (Prize) */}
-                                {detail.tag === 'PRIZE' && selectedEvent.id === 'ideathon' && (
-                                  <button 
-                                    onClick={() => {
-                                      setActiveView('results');
-                                      setTimeout(() => {
-                                        document.getElementById('results')?.scrollIntoView({ behavior: 'smooth' });
-                                      }, 50);
-                                    }}
-                                    className="card-action-btn" 
-                                    style={{ 
-                                      padding: '0.55rem 1.3rem', 
-                                      fontSize: '0.82rem', 
-                                      fontWeight: 800,
-                                      background: style.gradient, 
-                                      boxShadow: `0 4px 15px ${style.color}50`,
-                                      border: 'none',
-                                      borderRadius: '999px',
-                                      color: '#fff',
-                                      display: 'inline-flex',
-                                      alignItems: 'center',
-                                      gap: '0.5rem',
-                                      letterSpacing: '0.05em',
-                                      textTransform: 'uppercase',
-                                      cursor: 'pointer'
-                                    }}
-                                  >
-                                    <FaTrophy size={13} /> View Winners & Results &rarr;
-                                  </button>
-                                )}
 
                                 {/* Problem Statements button on Card 04 (Challenges) */}
                                 {detail.tag === 'CHALLENGES' && detail.documentLink && eventSpecificData[selectedEvent.id] && (
@@ -498,9 +468,6 @@ export default function Events() {
                           </motion.div>
                         )})}
 
-                        {selectedEvent.id === 'ideathon' && (
-                          <ResultsSection />
-                        )}
                       </motion.div>
                     )}
                   </AnimatePresence>
